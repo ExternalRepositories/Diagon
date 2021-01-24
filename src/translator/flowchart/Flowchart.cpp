@@ -20,7 +20,7 @@ class Flowchart : public Translator {
   virtual ~Flowchart() = default;
 
  private:
-  const char* Name() final { return "Flowchart"; }
+  const char* Name() final { return "Flowchart (Work in progress)"; }
   const char* Identifier() final { return "Flowchart"; }
   const char* Description() final {
     return "Transform a program into ascii art flowchart";
@@ -35,11 +35,11 @@ std::vector<Translator::Example> Flowchart::Examples() {
   return {
       {
           "xkcd - Flowchart explained by flowchart",
-          R"source(
+R"source(
 if ("DO YOU UNDERSTAND FLOW CHARTS?")
   "GOOD!";
-else if ("OKAY, YOU SEE THE LINE LABELED \"YES\"?") {
-  if ("... AND YOU CAN SEE THE ONES LABELED \"NO\"?") {
+else if ("OKAY, YOU SEE THE LINE LABELED 'YES'?") {
+  if ("... AND YOU CAN SEE THE ONES LABELED 'NO'?") {
     "GOOD";
   } else {
     if ("BUT YOU JUST FOLLOWED THEM TWICE?")
@@ -50,7 +50,7 @@ else if ("OKAY, YOU SEE THE LINE LABELED \"YES\"?") {
     "SCREW IT"
   }
 } else {
-  if ("BUT YOU SEE THE ONES LABELED \"NO\"?") {
+  if ("BUT YOU SEE THE ONES LABELED 'NO'?") {
     return "WAIT, WHAT?";
   } else {
     "LISTEN.";

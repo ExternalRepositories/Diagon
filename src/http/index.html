@@ -291,7 +291,11 @@ let withKatex = f => {
 let translate = function() {};
 let API = function() {}
 
+let push_state = () => {};
+
 function UpdateOutput() {
+  push_state();
+
   errors.value = '';
   translate(tools_data[tools.value].tool, input.value, GetOptions());
 
@@ -318,20 +322,23 @@ function UpdateOutput() {
   }
 }
 
+let OnToolsChanged = function() {
+  UpdateOptions();
+  UpdateExamples();
+  UpdateOutput();
+}
+
 function OnRuntimeInitialized() {
   translate = Module.cwrap('translate', 'void', ['string','string', 'string']);
   API = Module.cwrap('API', 'string', []);
 
-  tools.addEventListener("input", () => {
-    UpdateOptions();
-    UpdateExamples();
-    UpdateOutput();
-  });
+  tools.addEventListener("input", OnToolsChanged);
   examples.addEventListener("input", UpdateInput);
   input.addEventListener('input', UpdateOutput);
 
   let api = API();
   tools_data = JSON.parse(api);
+  setTimeout(PullState, 0);
   UpdateTools();
   UpdateExamples()
   UpdateOptions();
@@ -434,6 +441,33 @@ copyOutput.addEventListener("click", async function() {
   copyOutput.innerText = "Copy";
   copyOutput.setAttribute("data-active", "false")
 });
+
+const PushState = async function() {
+  await new Promise(r => setTimeout(r, 0));
+
+  let data = tools_data[tools.value].tool;
+  history.pushState({},'Flowchart', '#' + data);
+}
+
+const PullState = async function() {
+  push_state = PushState;
+
+  if (!location.hash || location.hash == "#landing_page") {
+    document.querySelector("#landing_page").scrollIntoView();
+    return;
+  }
+
+  let data = location.hash.substr(1);
+  for(let i in tools_data) {
+    if (tools_data[i].tool !== data)
+      continue;
+    console.log(i);
+    tools.selectedIndex = i;
+    document.querySelector("#code_area").scrollIntoView();
+    OnToolsChanged();
+  }
+}
+window.onpopstate = PullState;
 
 </script>
 <script src="diagon.js"></script>
